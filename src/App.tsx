@@ -1,25 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import Card from './components/Card'
 import './App.css';
 
 function App() {
+
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    queryApi();
+  }, [])
+
+  const queryApi = async () => {
+    const response = await fetch('https://random-data-api.com/api/users/random_user?size=10');
+    const res = await response.json()
+
+    if(res !== null){
+      setData(res);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className='header'>
+        <button onClick={queryApi}>Refresh</button>
+      </div>
+      <div className="card-grid" >
+        { data && data.map((ele: any) => 
+          <Card data={ele} />) }
+      </div>
+    </>
   );
 }
 
